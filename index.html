@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VogueThreads | Modern Fashion Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1a1a1a',
+                        secondary: '#f8f8f8',
+                        accentx: '#fa55ce',
+                        accent: "hsl(330, 100%, 62%)",
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease forwards',
+                        'slide-down': 'slideDown 0.3s ease forwards',
+                        'slide-in-right': 'slideInRight 0.3s ease forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            from: { opacity: 0, transform: 'translateY(-10px)' },
+                            to: { opacity: 1, transform: 'translateY(0)' },
+                        },
+                        slideDown: {
+                            from: { opacity: 0, transform: 'translateY(-20px)' },
+                            to: { opacity: 1, transform: 'translateY(0)' },
+                        },
+                        slideInRight: {
+                            from: { opacity: 0, transform: 'translateX(20px)' },
+                            to: { opacity: 1, transform: 'translateX(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(90deg, hsl(0, 0%, 0%), hsl(330, 100%, 60%));
+        }
+        
+        /* Hero slider styles */
+        .hero-slider {
+            height: 400px;
+        }
+        
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .hero-slide.active {
+            opacity: 1;
+        }
+        
+        .slide-indicator {
+            width: 12px;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .slide-indicator.active {
+            background-color: white;
+            transform: scale(1.2);
+        }
+        
+        /* Cart sidebar styles */
+        .cart-sidebar {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .cart-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        
+        .cart-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Product detail page styles */
+        .product-detail-page {
+            display: none;
+        }
+        
+        .thumbnail {
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .thumbnail:hover, .thumbnail.active {
+            opacity: 1;
+        }
+        
+        .size-option.selected {
+            background-color: #1a1a1a;
+            color: white;
+            border-color: #1a1a1a;
+        }
+    </style>
+</head>
+<body class="bg-white text-primary">
+    <!-- Header/Navigation -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="#" class="text-2xl font-bold">VGU<span class="text-accent">THRE</span></a>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="hover:text-accent transition">New Arrivals</a>
+                    <a href="#" class="hover:text-accent transition">Women</a>
+                    <a href="#" class="hover:text-accent transition">Men</a>
+                    <a href="#" class="hover:text-accent transition">Accessories</a>
+                    <a href="#" class="hover:text-accent transition">Sale</a>
+                </nav>
+                
+                <!-- Icons -->
+                <div class="flex items-center space-x-6">
+                    <div class="hidden md:block relative">
+                        <input type="text" placeholder="Search" class="px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-1 focus:ring-accent">
+                        <i class="fas fa-search absolute right-3 top-2.5 text-gray-400"></i>
+                    </div>
+                    
+                    <a href="#" class="relative" id="cartIcon">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" id="cartCount">0</span>
+                    </a>
+                    
+                    <a href="#">
+                        <i class="fas fa-user text-xl"></i>
+                    </a>
+                    
+                    <button class="md:hidden" id="mobileMenuButton">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu (hidden by default) -->
+        <div class="hidden md:hidden bg-white py-4 px-4 border-t animate-slide-down" id="mobileMenu">
+            <div class="flex flex-col space-y-4">
+                <a href="#" class="hover:text-accent transition">New Arrivals</a>
+                <a href="#" class="hover:text-accent transition">Women</a>
+                <a href="#" class="hover:text-accent transition">Men</a>
+                <a href="#" class="hover:text-accent transition">Accessories</a>
+                <a href="#" class="hover:text-accent transition">Sale</a>
+                <div class="relative pt-2">
+                    <input type="text" placeholder="Search" class="w-full px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-1 focus:ring-accent">
+                    <i class="fas fa-search absolute right-3 top-4 text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay fixed inset-0 bg-black bg-opacity-50 z-50" id="cartOverlay"></div>
+    <div class="cart-sidebar fixed top-0 right-0 h-full w-full md:w-96 bg-white z-50 shadow-xl" id="cartSidebar">
+        <div class="h-full flex flex-col">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h2 class="text-xl font-bold">Your Cart</h2>
+                <button id="closeCart" class="text-gray-500 hover:text-primary">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-4" id="cartItems">
+                <!-- Cart items will be added here dynamically -->
+                <div class="text-center py-8 text-gray-500" id="emptyCartMessage">
+                    <i class="fas fa-shopping-cart text-4xl mb-4 opacity-30"></i>
+                    <p>Your cart is empty</p>
+                </div>
+            </div>
+            
+            <div class="p-4 border-t">
+                <div class="flex justify-between mb-4">
+                    <span class="font-medium">Subtotal</span>
+                    <span class="font-bold" id="cartSubtotal">$0.00</span>
+                </div>
+                <div class="flex space-x-2">
+                    <button id="clearCart" class="flex-1 py-2 border border-gray-300 rounded hover:bg-gray-100 transition">Clear Cart</button>
+                    <button class="flex-1 bg-accent text-white py-2 rounded hover:bg-opacity-90 transition">Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main>
+        <!-- Home Page -->
+        <div id="homePage">
+            <!-- Hero Section with Slider -->
+            <section class="hero-slider relative overflow-hidden">
+                <div class="hero-slide active" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
+                    <div class="container mx-auto px-4 h-full flex items-center">
+                        <div class="max-w-lg text-white">
+                            <h1 class="text-5xl font-bold mb-4">Elevate Your Style</h1>
+                            <p class="text-xl mb-8">Discover the latest trends in fashion and express your unique style with our curated collection.</p>
+                            <div class="flex space-x-4">
+                                <a href="#" class="bg-accent text-sm md:text-base px-6 py-3 rounded-full font-medium hover:bg-opacity-90 transition">Shop Women</a>
+                                <a href="#" class="bg-white text-sm md:text-base text-primary px-6 py-3 rounded-full font-medium hover:bg-opacity-90 transition">Shop Men</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
+                    <div class="container mx-auto px-4 h-full flex items-center">
+                        <div class="max-w-lg text-white">
+                            <h1 class="text-5xl font-bold mb-4">Summer Collection</h1>
+                            <p class="text-xl mb-8">Refresh your wardrobe with our new summer arrivals. Light, comfortable, and stylish.</p>
+                            <div class="flex space-x-4">
+                                <a href="#" class="bg-accent text-sm md:text-base px-6 py-3 rounded-full font-medium hover:bg-opacity-90 transition">Collections</a>
+                                <a href="#" class="bg-white text-sm md:text-base text-primary px-6 py-3 rounded-full font-medium hover:bg-opacity-90 transition">Sale Items</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
+                    <div class="container mx-auto px-4 h-full flex items-center">
+                        <div class="max-w-lg text-white">
+                            <h1 class="text-5xl font-bold mb-4">New Accessories</h1>
+                            <p class="text-xl mb-8">Complete your look with our selection of accessories. Bags, jewelry, and more.</p>
+                            <div class="flex space-x-4">
+                                <a href="#" class="bg-accent text-sm md:text-base px-6 py-3 rounded-full font-medium hover:bg-opacity-90 transition">Accessories</a>
+                                <a href="#" class="bg-white text-sm md:text-base text-primary px-6 py-3 rounded-full font-medium hover:bg-opacity-90 transition">Best Sellers</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-indicators absolute bottom-8 left-0 right-0 flex justify-center gap-3">
+                    <div class="slide-indicator active rounded-full cursor-pointer" data-slide="0"></div>
+                    <div class="slide-indicator rounded-full cursor-pointer" data-slide="1"></div>
+                    <div class="slide-indicator rounded-full cursor-pointer" data-slide="2"></div>
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section class="py-16 bg-secondary">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl font-bold text-center mb-12">Shop By Category</h2>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="category-card rounded-lg overflow-hidden shadow-md bg-white transition-all duration-300 ease-in-out hover:scale-105">
+                            <div class="h-20 md:h-40 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1525299374597-911581e1bdef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"></div>
+                            <div class="p-2 text-center">
+                                <a href="#" class="text-sm text-accent mt-2 inline-block">Women</a>
+                            </div>
+                        </div>
+                        
+                        <div class="category-card rounded-lg overflow-hidden shadow-md bg-white transition-all duration-300 ease-in-out hover:scale-105">
+                            <div class="h-20 md:h-40 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"></div>
+                            <div class="p-2 text-center">
+                                <a href="#" class="text-sm text-accent mt-2 inline-block">Men</a>
+                            </div>
+                        </div>
+                        
+                        <div class="category-card rounded-lg overflow-hidden shadow-md bg-white transition-all duration-300 ease-in-out hover:scale-105">
+                            <div class="h-20 md:h-40 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"></div>
+                            <div class="p-2 text-center">
+                                <a href="#" class="text-sm text-accent mt-2 inline-block">Accessories</a>
+                            </div>
+                        </div>
+                        
+                        <div class="category-card rounded-lg overflow-hidden shadow-md bg-white transition-all duration-300 ease-in-out hover:scale-105">
+                            <div class="h-20 md:h-40 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1519457431-44ccd64a579b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"></div>
+                            <div class="p-2 text-center">
+                                <a href="#" class="text-sm text-accent mt-2 inline-block">Footwear</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Products -->
+            <section class="py-16">
+                <div class="container mx-auto px-4">
+                    <div class="flex justify-between items-center mb-12">
+                        <h2 class="text-3xl font-bold">New Arrivals</h2>
+                        <a href="#" class="text-accent hover:underline">View All</a>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Product Card -->
+                        <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+                            <a href="product-details.html" class="block relative overflow-hidden rounded-lg p-2">
+                                <img src="https://nitawears.com/uploads/68aee762dbd91_IMG_4247.jpeg" alt="Product" class="w-full h-[325px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                                <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded">New</div>
+                            </a>
+                            <div class="p-4">
+                                <a href="product-details.html" class="font-medium hover:text-accent transition">Minimalist Oversized T-Shirt</a>
+                                <div class="flex items-center mt-2">
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500 ml-2">(42)</span>
+                                </div>
+                                <div class="mt-3 flex justify-between items-center">
+                                    <span class="font-bold">$49.99</span>
+                                    <span class="text-sm text-gray-500 line-through">$69.99</span>
+                                </div>
+                                <div class="relative mt-4">
+                                    <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="1" data-name="Minimalist Oversized T-Shirt" data-price="49.99" data-image="https://nitawears.com/uploads/68aee762dbd91_IMG_4247.jpeg">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product Card -->
+                        <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+                            <a href="product-details.html" class="block relative overflow-hidden rounded-lg p-2">
+                                <img src="https://nitawears.com/uploads/68aba0559db35_IMG_4898.jpeg" alt="Product" class="w-full h-[325px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                            </a>
+                            <div class="p-4">
+                                <a href="product-details.html" class="font-medium hover:text-accent transition">Slim Fit Denim Jacket</a>
+                                <div class="flex items-center mt-2">
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500 ml-2">(28)</span>
+                                </div>
+                                <div class="mt-3">
+                                    <span class="font-bold">$89.99</span>
+                                </div>
+                                <div class="relative mt-4">
+                                    <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="2" data-name="Slim Fit Denim Jacket" data-price="89.99" data-image="https://nitawears.com/uploads/68aba0559db35_IMG_4898.jpeg">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product Card -->
+                        <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+                            <a href="product-details.html" class="block relative overflow-hidden rounded-lg p-2">
+                                <img src="https://nitawears.com/uploads/68af8bf82e057_IMG_3432.jpeg" alt="Product" class="w-full h-[325px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                                <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded">Sale</div>
+                            </a>
+                            <div class="p-4">
+                                <a href="product-details.html" class="font-medium hover:text-accent transition">Classic Patterned Shirt</a>
+                                <div class="flex items-center mt-2">
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500 ml-2">(65)</span>
+                                </div>
+                                <div class="mt-3 flex justify-between items-center">
+                                    <span class="font-bold">$59.99</span>
+                                    <span class="text-sm text-gray-500 line-through">$79.99</span>
+                                </div>
+                                <div class="relative mt-4">
+                                    <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="3" data-name="Classic Patterned Shirt" data-price="59.99" data-image="https://nitawears.com/uploads/68af8bf82e057_IMG_3432.jpeg">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product Card -->
+                        <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+                            <a href="product-detail2.html" class="block relative overflow-hidden rounded-lg p-2">
+                                <img src="https://nitawears.com/uploads/68af9c29b9cea_IMG_3117.jpeg" alt="Product" class="w-full h-[325px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                            </a>
+                            <div class="p-4">
+                                <a href="product-detail2.html" class="font-medium hover:text-accent transition">Tailored Formal Blazer</a>
+                                <div class="flex items-center mt-2">
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500 ml-2">(37)</span>
+                                </div>
+                                <div class="mt-3">
+                                    <span class="font-bold">$129.99</span>
+                                </div>
+                                <div class="relative mt-4">
+                                    <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="4" data-name="Tailored Formal Blazer" data-price="129.99" data-image="https://nitawears.com/uploads/68af9c29b9cea_IMG_3117.jpeg">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Promotional Banner -->
+            <section class="py-16 bg-primary text-white">
+                <div class="container mx-auto px-4 text-center">
+                    <h2 class="text-4xl font-bold mb-6">Summer Sale</h2>
+                    <p class="text-xl mb-8 max-w-2xl mx-auto">Up to 50% off on selected items. Hurry up while stocks last!</p>
+                    <a href="#" class="bg-accent px-8 py-3 rounded-full font-medium hover:bg-opacity-90 transition">Shop Now</a>
+                </div>
+            </section>
+
+            <!-- Testimonials -->
+            <section class="py-16 bg-secondary">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl font-bold text-center mb-12">What Our Customers Say</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Testimonial Card -->
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="flex text-yellow-400 mb-4">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="text-gray-600 mb-4">"The quality of the clothes is exceptional. I've been shopping here for years and have never been disappointed."</p>
+                            <div class="flex items-center">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Customer" class="w-10 h-10 rounded-full object-cover">
+                                <div class="ml-3">
+                                    <h4 class="font-medium">Michael Chen</h4>
+                                    <p class="text-sm text-gray-500">Regular Customer</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial Card -->
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="flex text-yellow-400 mb-4">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="text-gray-600 mb-4">"Their customer service is outstanding. They helped me find the perfect outfit for my wedding anniversary."</p>
+                            <div class="flex items-center">
+                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Customer" class="w-10 h-10 rounded-full object-cover">
+                                <div class="ml-3">
+                                    <h4 class="font-medium">Sarah Johnson</h4>
+                                    <p class="text-sm text-gray-500">Fashion Blogger</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial Card -->
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="flex text-yellow-400 mb-4">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p class="text-gray-600 mb-4">"Fast shipping and easy returns. The clothes fit perfectly and the fabric quality is much better than I expected."</p>
+                            <div class="flex items-center">
+                                <img src="https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Customer" class="w-10 h-10 rounded-full object-cover">
+                                <div class="ml-3">
+                                    <h4 class="font-medium">Alex Rivera</h4>
+                                    <p class="text-sm text-gray-500">New Customer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Newsletter -->
+    <section class="bg-[linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)),url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80')] bg-cover bg-center text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
+            <p class="max-w-xl mx-auto mb-8">Stay updated with the latest trends and exclusive offers. Subscribe to our newsletter and get 10% off your first order.</p>
+            
+            <form class="max-w-md mx-auto flex flex-col sm:flex-row">
+                <input type="email" placeholder="Your email address" class="flex-grow px-4 py-3 rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none focus:outline-none text-gray-800">
+                <button type="submit" class="bg-accent px-6 py-3 rounded-b-lg sm:rounded-r-lg sm:rounded-bl-none font-medium hover:bg-opacity-90 transition">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">VOGUE<span class="text-accent">THREADS</span></h3>
+                    <p class="text-gray-400">Elevating your style with quality fashion since 2010.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Shop</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Women</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Men</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Accessories</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">New Arrivals</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Sale</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Connect</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent transition">
+                            <i class="fab fa-pinterest-p"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400">Accepted Payment Methods</p>
+                    <div class="flex space-x-2 mt-2">
+                        <i class="fab fa-cc-visa text-2xl"></i>
+                        <i class="fab fa-cc-mastercard text-2xl"></i>
+                        <i class="fab fa-cc-amex text-2xl"></i>
+                        <i class="fab fa-cc-paypal text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 VogueThreads. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Notification -->
+    <div class="fixed top-20 right-4 bg-white shadow-lg rounded-lg p-4 animate-fade-in hidden" style="width: 320px;" id="cartNotification">
+        <div class="flex justify-between items-start mb-2">
+            <h4 class="font-bold">Added to Cart</h4>
+            <button class="text-gray-500 hover:text-primary" id="closeNotification">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="flex">
+            <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Product" class="w-16 h-16 object-cover rounded" id="notificationImage">
+            <div class="ml-4">
+                <p class="font-medium" id="notificationName">Minimalist Oversized T-Shirt</p>
+                <p class="text-gray-600">Qty: 1</p>
+                <p class="font-bold mt-1" id="notificationPrice">$49.99</p>
+            </div>
+        </div>
+        <div class="flex mt-4 space-x-2">
+            <button class="flex-1 text-center bg-primary text-white py-2 rounded" id="viewCartButton">View Cart</button>
+            <button class="flex-1 text-center bg-accent text-white py-2 rounded">Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeNotification = document.getElementById('closeNotification');
+        const cartNotification = document.getElementById('cartNotification');
+        const cartIcon = document.getElementById('cartIcon');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const closeCart = document.getElementById('closeCart');
+        const cartItems = document.getElementById('cartItems');
+        const cartCount = document.getElementById('cartCount');
+        const cartSubtotal = document.getElementById('cartSubtotal');
+        const emptyCartMessage = document.getElementById('emptyCartMessage');
+        const clearCartButton = document.getElementById('clearCart');
+        const viewCartButton = document.getElementById('viewCartButton');
+        const notificationImage = document.getElementById('notificationImage');
+        const notificationName = document.getElementById('notificationName');
+        const notificationPrice = document.getElementById('notificationPrice');
+        
+        // Mobile Menu Toggle
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close Notification
+        closeNotification.addEventListener('click', () => {
+            cartNotification.classList.add('hidden');
+        });
+        
+        // Cart Toggle
+        cartIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            cartSidebar.classList.add('open');
+            cartOverlay.classList.add('open');
+        });
+        
+        closeCart.addEventListener('click', () => {
+            cartSidebar.classList.remove('open');
+            cartOverlay.classList.remove('open');
+        });
+        
+        cartOverlay.addEventListener('click', () => {
+            cartSidebar.classList.remove('open');
+            cartOverlay.classList.remove('open');
+        });
+        
+        // View Cart Button in Notification
+        viewCartButton.addEventListener('click', () => {
+            cartSidebar.classList.add('open');
+            cartOverlay.classList.add('open');
+            cartNotification.classList.add('hidden');
+        });
+        
+        // Cart Functionality
+        let cart = [];
+        
+        // Add to Cart
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const name = button.getAttribute('data-name');
+                const price = parseFloat(button.getAttribute('data-price'));
+                const image = button.getAttribute('data-image');
+                
+                // Check if product already in cart
+                const existingItem = cart.find(item => item.id === id);
+                
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({
+                        id,
+                        name,
+                        price,
+                        image,
+                        quantity: 1
+                    });
+                }
+                
+                updateCart();
+                
+                // Show notification
+                notificationImage.src = image;
+                notificationName.textContent = name;
+                notificationPrice.textContent = `$${price.toFixed(2)}`;
+                cartNotification.classList.remove('hidden');
+                
+                // Auto hide notification after 5 seconds
+                setTimeout(() => {
+                    cartNotification.classList.add('hidden');
+                }, 5000);
+            });
+        });
+        
+        // Clear Cart
+        clearCartButton.addEventListener('click', () => {
+            cart = [];
+            updateCart();
+        });
+        
+        // Update Cart
+        function updateCart() {
+            // Update cart count
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            // Update cart items
+            cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                emptyCartMessage.classList.remove('hidden');
+                cartItems.appendChild(emptyCartMessage);
+            } else {
+                emptyCartMessage.classList.add('hidden');
+                
+                cart.forEach(item => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'flex py-4 border-b';
+                    cartItem.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                        <div class="ml-4 flex-1">
+                            <h4 class="font-medium">${item.name}</h4>
+                            <p class="text-gray-600">$${item.price.toFixed(2)}</p>
+                            <div class="flex items-center mt-2">
+                                <button class="decrease-quantity text-gray-500 px-2" data-id="${item.id}">-</button>
+                                <span class="quantity mx-2">${item.quantity}</span>
+                                <button class="increase-quantity text-gray-500 px-2" data-id="${item.id}">+</button>
+                            </div>
+                        </div>
+                        <button class="remove-item text-gray-400 hover:text-red-500" data-id="${item.id}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    
+                    cartItems.appendChild(cartItem);
+                });
+                
+                // Add event listeners to quantity buttons
+                document.querySelectorAll('.increase-quantity').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const id = button.getAttribute('data-id');
+                        const item = cart.find(item => item.id === id);
+                        item.quantity += 1;
+                        updateCart();
+                    });
+                });
+                
+                document.querySelectorAll('.decrease-quantity').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const id = button.getAttribute('data-id');
+                        const item = cart.find(item => item.id === id);
+                        if (item.quantity > 1) {
+                            item.quantity -= 1;
+                        } else {
+                            cart = cart.filter(item => item.id !== id);
+                        }
+                        updateCart();
+                    });
+                });
+                
+                document.querySelectorAll('.remove-item').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const id = button.getAttribute('data-id');
+                        cart = cart.filter(item => item.id !== id);
+                        updateCart();
+                    });
+                });
+            }
+            
+            // Update subtotal
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+        }
+        
+        // Hero Slider
+        const slides = document.querySelectorAll('.hero-slide');
+        const indicators = document.querySelectorAll('.slide-indicator');
+        let currentSlide = 0;
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            indicators.forEach(indicator => indicator.classList.remove('active'));
+            
+            slides[index].classList.add('active');
+            indicators[index].classList.add('active');
+            currentSlide = index;
+        }
+        
+        function nextSlide() {
+            let nextIndex = (currentSlide + 1) % slides.length;
+            showSlide(nextIndex);
+        }
+        
+        // Add click events to indicators
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                showSlide(index);
+            });
+        });
+        
+        // Auto slide every 5 seconds
+        setInterval(nextSlide, 5000);
+        
+        // Initialize cart
+        updateCart();
+    </script>
+</body>
+</html>
