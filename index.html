@@ -217,8 +217,8 @@
     <main>
         <!-- Home Page -->
         <div id="homePage">
-            <!-- Hero Section with Slider -->
-            <section class="hero-slider relative overflow-hidden">
+            <!-- Hero Section with Slider h-screen (for full)-->
+            <section class="hero-slider relative overflow-hidden h-[500px] md:h-[400px]">
                 <div class="hero-slide active" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
                     <div class="container mx-auto px-4 h-full flex items-center">
                         <div class="max-w-lg text-white">
@@ -229,6 +229,8 @@
                                 <a href="#" class="bg-white text-sm md:text-base text-primary px-6 py-3 rounded-full font-medium hover:bg-opacity-90 transition">Shop Men</a>
                             </div>
                         </div>
+                        <!-- Mobile-only fade effect -->
+                        <div class="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-gray-50 md:hidden"></div>
                     </div>
                 </div>
                 
@@ -242,6 +244,8 @@
                                 <a href="#" class="bg-white text-sm md:text-base text-primary px-6 py-3 rounded-full font-medium hover:bg-opacity-90 transition">Sale Items</a>
                             </div>
                         </div>
+                        <!-- Mobile-only fade effect -->
+                        <div class="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-gray-50 md:hidden"></div>
                     </div>
                 </div>
                 
@@ -255,6 +259,8 @@
                                 <a href="#" class="bg-white text-sm md:text-base text-primary px-6 py-3 rounded-full font-medium hover:bg-opacity-90 transition">Best Sellers</a>
                             </div>
                         </div>
+                        <!-- Mobile-only fade effect -->
+                        <div class="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-gray-50 md:hidden"></div>
                     </div>
                 </div>
                 
