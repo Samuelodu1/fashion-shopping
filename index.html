@@ -6,10 +6,19 @@
     <title>VogueThreads | Modern Fashion Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        'serif': ['Playfair Display', 'serif'],
+                        'sans': ['Montserrat', 'sans-serif'],
+                        'elegant': ['Cormorant Garamond', 'serif'],
+                    },
                     colors: {
                         primary: '#1a1a1a',
                         secondary: '#f8f8f8',
@@ -40,10 +49,8 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             scroll-behavior: smooth;
         }
 
@@ -127,6 +134,37 @@
             color: white;
             border-color: #1a1a1a;
         }
+
+        /* Font-specific styles */
+        .brand-font {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        .hero-font {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+        }
+
+        .product-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
+        }
+
+        .price-font {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .category-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body class="bg-white text-primary">
@@ -135,10 +173,10 @@
         <div class="container mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
                 <!-- Logo -->
-                <a href="#" class="text-2xl font-bold">VGU<span class="text-accent">THRE</span></a>
+                <a href="#" class="text-2xl font-bold brand-font">VOGU<span class="text-accent">THRE</span></a>
                 
                 <!-- Desktop Navigation -->
-                <nav class="hidden md:flex space-x-8">
+                <nav class="hidden md:flex space-x-8 font-medium">
                     <a href="#" class="hover:text-accent transition">New Arrivals</a>
                     <a href="#" class="hover:text-accent transition">Women</a>
                     <a href="#" class="hover:text-accent transition">Men</a>
@@ -149,13 +187,13 @@
                 <!-- Icons -->
                 <div class="flex items-center space-x-6">
                     <div class="hidden md:block relative">
-                        <input type="text" placeholder="Search" class="px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-1 focus:ring-accent">
+                        <input type="text" placeholder="Search" class="px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-1 focus:ring-accent font-sans">
                         <i class="fas fa-search absolute right-3 top-2.5 text-gray-400"></i>
                     </div>
                     
                     <a href="#" class="relative" id="cartIcon">
                         <i class="fas fa-shopping-cart text-xl"></i>
-                        <span class="absolute -top-2 -right-2 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" id="cartCount">0</span>
+                        <span class="absolute -top-2 -right-2 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-sans" id="cartCount">0</span>
                     </a>
 
                     <button class="md:hidden" id="mobileMenuButton">
@@ -167,14 +205,14 @@
         
         <!-- Mobile Menu (hidden by default) -->
         <div class="hidden md:hidden bg-white py-4 px-4 border-t animate-slide-down" id="mobileMenu">
-            <div class="flex flex-col space-y-4">
+            <div class="flex flex-col space-y-4 font-medium">
                 <a href="#" class="hover:text-accent transition">New Arrivals</a>
                 <a href="#" class="hover:text-accent transition">Women</a>
                 <a href="#" class="hover:text-accent transition">Men</a>
                 <a href="#" class="hover:text-accent transition">Accessories</a>
                 <a href="#" class="hover:text-accent transition">Sale</a>
                 <div class="relative pt-2">
-                    <input type="text" placeholder="Search" class="w-full px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-1 focus:ring-accent">
+                    <input type="text" placeholder="Search" class="w-full px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-1 focus:ring-accent font-sans">
                     <i class="fas fa-search absolute right-3 top-4 text-gray-400"></i>
                 </div>
             </div>
@@ -186,7 +224,7 @@
     <div class="cart-sidebar fixed top-0 right-0 h-full w-full md:w-96 bg-white z-50 shadow-xl" id="cartSidebar">
         <div class="h-full flex flex-col">
             <div class="p-4 border-b flex justify-between items-center">
-                <h2 class="text-xl font-bold">Your Cart</h2>
+                <h2 class="text-xl font-bold font-serif">Your Cart</h2>
                 <button id="closeCart" class="text-gray-500 hover:text-primary">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -196,18 +234,18 @@
                 <!-- Cart items will be added here dynamically -->
                 <div class="text-center py-8 text-gray-500" id="emptyCartMessage">
                     <i class="fas fa-shopping-cart text-4xl mb-4 opacity-30"></i>
-                    <p>Your cart is empty</p>
+                    <p class="font-sans">Your cart is empty</p>
                 </div>
             </div>
             
             <div class="p-4 border-t">
                 <div class="flex justify-between mb-4">
-                    <span class="font-medium">Subtotal</span>
-                    <span class="font-bold" id="cartSubtotal">$0.00</span>
+                    <span class="font-medium font-sans">Subtotal</span>
+                    <span class="font-bold font-sans" id="cartSubtotal">$0.00</span>
                 </div>
                 <div class="flex space-x-2">
-                    <button id="clearCart" class="flex-1 py-2 border border-gray-300 rounded hover:bg-gray-100 transition">Clear Cart</button>
-                    <button class="flex-1 bg-accent text-white py-2 rounded hover:bg-opacity-90 transition">Checkout</button>
+                    <button id="clearCart" class="flex-1 py-2 border border-gray-300 rounded hover:bg-gray-100 transition font-sans">Clear Cart</button>
+                    <button class="flex-1 bg-accent text-white py-2 rounded hover:bg-opacity-90 transition font-sans">Checkout</button>
                 </div>
             </div>
         </div>
@@ -222,11 +260,11 @@
                 <div class="hero-slide active" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
                     <div class="container mx-auto px-4 h-full flex items-center">
                         <div class="max-w-lg text-white">
-                            <h1 class="text-5xl font-bold mb-4">Elevate Your Style</h1>
-                            <p class="text-md md:text-xl mb-8">Discover the latest trends in fashion and express your unique style with our curated collection.</p>
+                            <h1 class="text-4xl md:text-5xl font-bold mb-4 hero-font">Elevate Your Style</h1>
+                            <p class="text-md md:text-xl mb-8 font-sans">Discover the latest trends in fashion and express your unique style with our curated collection.</p>
                             <div class="flex space-x-4">
-                                <a href="#" class="bg-accent text-xs md:text-sm px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition">Shop Women</a>
-                                <a href="#" class="bg-white text-xs md:text-sm text-primary px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition">Shop Men</a>
+                                <a href="#" class="bg-accent text-xs md:text-sm px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition font-sans">Shop Women</a>
+                                <a href="#" class="bg-white text-xs md:text-sm text-primary px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition font-sans">Shop Men</a>
                             </div>
                         </div>
                         <!-- Mobile-only fade effect -->
@@ -237,11 +275,11 @@
                 <div class="hero-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
                     <div class="container mx-auto px-4 h-full flex items-center">
                         <div class="max-w-lg text-white">
-                            <h1 class="text-5xl font-bold mb-4">Summer Collection</h1>
-                            <p class="text-md md:text-xl mb-8">Refresh your wardrobe with our new summer arrivals. Light, comfortable, and stylish.</p>
+                            <h1 class="text-4xl md:text-5xl font-bold mb-4 hero-font">Summer Collection</h1>
+                            <p class="text-md md:text-xl mb-8 font-sans">Refresh your wardrobe with our new summer arrivals. Light, comfortable, and stylish.</p>
                             <div class="flex space-x-4">
-                                <a href="#" class="bg-accent text-xs md:text-sm px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition">Collections</a>
-                                <a href="#" class="bg-white text-xs md:text-sm text-primary px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition">Sale Items</a>
+                                <a href="#" class="bg-accent text-xs md:text-sm px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition font-sans">Collections</a>
+                                <a href="#" class="bg-white text-xs md:text-sm text-primary px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition font-sans">Sale Items</a>
                             </div>
                         </div>
                         <!-- Mobile-only fade effect -->
@@ -252,11 +290,11 @@
                 <div class="hero-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
                     <div class="container mx-auto px-4 h-full flex items-center">
                         <div class="max-w-lg text-white">
-                            <h1 class="text-5xl font-bold mb-4">New Accessories</h1>
-                            <p class="text-md md:text-xl mb-8">Complete your look with our selection of accessories. Bags, jewelry, and more.</p>
+                            <h1 class="text-4xl md:text-5xl font-bold mb-4 hero-font">New Accessories</h1>
+                            <p class="text-md md:text-xl mb-8 font-sans">Complete your look with our selection of accessories. Bags, jewelry, and more.</p>
                             <div class="flex space-x-4">
-                                <a href="#" class="bg-accent text-xs md:text-sm md:text-base px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition">Accessories</a>
-                                <a href="#" class="bg-white text-xs md:text-sm text-primary px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition">Best Sellers</a>
+                                <a href="#" class="bg-accent text-xs md:text-sm md:text-base px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition font-sans">Accessories</a>
+                                <a href="#" class="bg-white text-xs md:text-sm text-primary px-5 py-2 rounded-full font-medium hover:bg-opacity-90 transition font-sans">Best Sellers</a>
                             </div>
                         </div>
                         <!-- Mobile-only fade effect -->
@@ -274,13 +312,13 @@
             <!-- Categories Section -->
             <section class="py-16 bg-secondary">
             <div class="container mx-auto px-4">
-                <h2 class="text-3xl font-bold text-center mb-12">Shop By Category</h2>
+                <h2 class="text-3xl font-bold text-center mb-12 section-title">Shop Category</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Card -->
-                <div class="relative bg-white border shadow-sm rounded-lg p-6 hover:shadow-md transition">
-                    <h3 class="text-lg font-medium">Comfy Dress</h3>
-                    <a href="#" class="text-xs md:text-sm text-gray-500 mt-2 inline-flex items-center gap-1">
+                <div class="relative bg-white border shadow-sm rounded-lg py-5 px-6 hover:shadow-md transition">
+                    <h3 class="text-lg font-medium category-title">Comfy Dress</h3>
+                    <a href="#" class="text-xs md:text-sm text-gray-500 mt-2 inline-flex items-center gap-1 font-sans">
                         Shop here <span>→</span>
                     </a>
                     <!-- Floating Image -->
@@ -291,11 +329,10 @@
                     </div>
                 </div>
 
-
                 <!-- Card -->
-                <div class="relative bg-white border shadow-sm rounded-lg p-6 hover:shadow-md transition">
-                    <h3 class="text-lg font-medium">Comfy Pants</h3>
-                    <a href="#" class="text-xs md:text-sm text-gray-500 mt-2 inline-flex items-center gap-1">
+                <div class="relative bg-white border shadow-sm rounded-lg py-5 px-6 hover:shadow-md transition">
+                    <h3 class="text-lg font-medium category-title">Comfy Pants</h3>
+                    <a href="#" class="text-xs md:text-sm text-gray-500 mt-2 inline-flex items-center gap-1 font-sans">
                         Shop here <span>→</span>
                     </a>
                     <!-- Floating Image -->
@@ -307,9 +344,9 @@
                 </div>
 
                 <!-- Card -->
-                <div class="relative bg-white border shadow-sm rounded-lg p-6 hover:shadow-md transition">
-                    <h3 class="text-lg font-medium">Comfy Shirt</h3>
-                    <a href="#" class="text-xs md:text-sm text-gray-500 mt-2 inline-flex items-center gap-1">
+                <div class="relative bg-white border shadow-sm rounded-lg py-5 px-6 hover:shadow-md transition">
+                    <h3 class="text-lg font-medium category-title">Comfy Shirt</h3>
+                    <a href="#" class="text-xs md:text-sm text-gray-500 mt-2 inline-flex items-center gap-1 font-sans">
                         Shop here <span>→</span>
                     </a>
                     <!-- Floating Image -->
@@ -324,40 +361,29 @@
             </div>
             </section>
 
-
             <!-- Featured Products -->
             <section class="py-12 md:px-12">
                 <div class="container mx-auto px-4">
 
                     <div class="container mx-auto px-4 text-center">
-                        <h2 class="text-xl md:text-3xl font-bold mb-2">LET'S GET DRESSY</h2>
-                        <p class="text-gray-500 text-xs md:text-sm max-w-xl mx-auto mb-8 md:mb-16">From our range of elegant dresses to our clean cut two pieces to the stylish casual dresses, the Let’s get dressy category will always have you in the best dressed circle!</p>
+                        <h2 class="text-xl md:text-3xl font-bold mb-2 section-title">LET'S GET DRESSY</h2>
+                        <p class="text-gray-500 text-xs md:text-sm max-w-xl mx-auto mb-8 md:mb-16 font-sans">From our range of elegant dresses to our clean cut two pieces to the stylish casual dresses, the Let's get dressy category will always have you in the best dressed circle!</p>
                     </div>
                     
-                    <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
                         <!-- Product Card -->
                         <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
                             <a href="product-details.html" class="block relative overflow-hidden rounded-lg p-2">
-                                <img src="https://nitawears.com/uploads/68aee762dbd91_IMG_4247.jpeg" alt="Product" class="w-full h-[150px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
-                                <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded">New</div>
+                                <img src="https://nitawears.com/uploads/68aee762dbd91_IMG_4247.jpeg" alt="Product" class="w-full h-[150px] md:h-[310px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                                <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded font-sans">New</div>
                             </a>
-                            <div class="p-4">
-                                <a href="product-details.html" class="font-medium hover:text-accent transition">Minimalist Oversized T-Shirt</a>
-                                <div class="flex items-center mt-2">
-                                    <div class="flex text-yellow-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </div>
-                                    <span class="text-xs text-gray-500 ml-2">(42)</span>
-                                </div>
+                            <div class="px-4 pb-3">
+                                <a href="product-details.html" class="font-medium hover:text-accent transition product-title line-clamp-2 leading-tight">Minimalist Oversized T-Shirt</a>
                                 <div class="mt-3 flex justify-between items-center">
-                                    <span class="font-bold">$49.99</span>
-                                    <span class="text-sm text-gray-500 line-through">$69.99</span>
+                                    <span class="font-bold price-font">$49.99</span>
+                                    <span class="text-xs text-gray-500 line-through font-sans">$69.99</span>
                                 </div>
-                                <div class="relative mt-4">
+                                <div class="relative mt-4 hidden">
                                     <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="1" data-name="Minimalist Oversized T-Shirt" data-price="49.99" data-image="https://nitawears.com/uploads/68aee762dbd91_IMG_4247.jpeg">
                                         <i class="fas fa-shopping-cart"></i>
                                     </button>
@@ -368,24 +394,14 @@
                         <!-- Product Card -->
                         <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
                             <a href="product-details.html" class="block relative overflow-hidden rounded-lg p-2">
-                                <img src="https://nitawears.com/uploads/68aba0559db35_IMG_4898.jpeg" alt="Product" class="w-full h-[150px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                                <img src="https://nitawears.com/uploads/68aba0559db35_IMG_4898.jpeg" alt="Product" class="w-full h-[150px] md:h-[310px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
                             </a>
-                            <div class="p-4">
-                                <a href="product-details.html" class="font-medium hover:text-accent transition">Slim Fit Denim Jacket</a>
-                                <div class="flex items-center mt-2">
-                                    <div class="flex text-yellow-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                    <span class="text-xs text-gray-500 ml-2">(28)</span>
-                                </div>
+                            <div class="px-4 pb-3">
+                                <a href="product-details.html" class="font-medium hover:text-accent transition product-title line-clamp-2 leading-tight">Slim Fit Denim Jacket</a>
                                 <div class="mt-3">
-                                    <span class="font-bold">$89.99</span>
+                                    <span class="font-bold price-font">$89.99</span>
                                 </div>
-                                <div class="relative mt-4">
+                                <div class="relative mt-4 hidden">
                                     <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="2" data-name="Slim Fit Denim Jacket" data-price="89.99" data-image="https://nitawears.com/uploads/68aba0559db35_IMG_4898.jpeg">
                                         <i class="fas fa-shopping-cart"></i>
                                     </button>
@@ -396,26 +412,16 @@
                         <!-- Product Card -->
                         <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
                             <a href="product-details.html" class="block relative overflow-hidden rounded-lg p-2">
-                                <img src="https://nitawears.com/uploads/68af8bf82e057_IMG_3432.jpeg" alt="Product" class="w-full h-[150px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
-                                <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded">Sale</div>
+                                <img src="https://nitawears.com/uploads/68af8bf82e057_IMG_3432.jpeg" alt="Product" class="w-full h-[150px] md:h-[310px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                                <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded font-sans">Sale</div>
                             </a>
-                            <div class="p-4">
-                                <a href="product-details.html" class="font-medium hover:text-accent transition">Classic Patterned Shirt</a>
-                                <div class="flex items-center mt-2">
-                                    <div class="flex text-yellow-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                    <span class="text-xs text-gray-500 ml-2">(65)</span>
-                                </div>
+                            <div class="px-4 pb-3">
+                                <a href="product-details.html" class="font-medium hover:text-accent transition product-title line-clamp-2 leading-tight">Classic Patterned Shirt</a>
                                 <div class="mt-3 flex justify-between items-center">
-                                    <span class="font-bold">$59.99</span>
-                                    <span class="text-sm text-gray-500 line-through">$79.99</span>
+                                    <span class="font-bold price-font">$59.99</span>
+                                    <span class="text-xs text-gray-500 line-through font-sans">$79.99</span>
                                 </div>
-                                <div class="relative mt-4">
+                                <div class="relative mt-4 hidden">
                                     <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="3" data-name="Classic Patterned Shirt" data-price="59.99" data-image="https://nitawears.com/uploads/68af8bf82e057_IMG_3432.jpeg">
                                         <i class="fas fa-shopping-cart"></i>
                                     </button>
@@ -426,24 +432,14 @@
                         <!-- Product Card -->
                         <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
                             <a href="product-details.html" class="block relative overflow-hidden rounded-lg p-2">
-                                <img src="https://nitawears.com/uploads/68af9c29b9cea_IMG_3117.jpeg" alt="Product" class="w-full h-[150px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                                <img src="https://nitawears.com/uploads/68af9c29b9cea_IMG_3117.jpeg" alt="Product" class="w-full h-[150px] md:h-[310px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
                             </a>
-                            <div class="p-4">
-                                <a href="product-details.html" class="font-medium hover:text-accent transition">Tailored Formal Blazer</a>
-                                <div class="flex items-center mt-2">
-                                    <div class="flex text-yellow-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </div>
-                                    <span class="text-xs text-gray-500 ml-2">(37)</span>
-                                </div>
+                            <div class="px-4 pb-3">
+                                <a href="product-details.html" class="font-medium hover:text-accent transition product-title line-clamp-2 leading-tight">Tailored Formal Blazer</a>
                                 <div class="mt-3">
-                                    <span class="font-bold">$129.99</span>
+                                    <span class="font-bold price-font">$129.99</span>
                                 </div>
-                                <div class="relative mt-4">
+                                <div class="relative mt-4 hidden">
                                     <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="4" data-name="Tailored Formal Blazer" data-price="129.99" data-image="https://nitawears.com/uploads/68af9c29b9cea_IMG_3117.jpeg">
                                         <i class="fas fa-shopping-cart"></i>
                                     </button>
@@ -457,9 +453,9 @@
             <!-- Promotional Banner -->
             <section class="py-16 bg-primary text-white">
                 <div class="container mx-auto px-4 text-center">
-                    <h2 class="text-4xl font-bold mb-6">Summer Sale</h2>
-                    <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto">Up to 50% off on selected items. Hurry up while stocks last!</p>
-                    <a href="#" class="bg-accent px-7 py-2 rounded-full font-medium hover:bg-opacity-90 transition">Shop Now</a>
+                    <h2 class="text-4xl font-bold mb-6 hero-font">Summer Sale</h2>
+                    <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto font-sans">Up to 50% off on selected items. Hurry up while stocks last!</p>
+                    <a href="#" class="bg-accent px-7 py-2 rounded-full font-medium hover:bg-opacity-90 transition font-sans">Shop Now</a>
                 </div>
             </section>
         </div>
@@ -468,8 +464,8 @@
     <!-- Newsletter -->
     <section class="bg-[linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)),url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80')] bg-cover bg-center text-white py-16">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-xl font-bold mb-2">Subscribe to Our Newsletter</h2>
-            <p class="text-xs md:text-sm max-w-xl mx-auto mb-4">Stay updated with the latest trends and exclusive offers. Subscribe to our newsletter and get 10% off your first order.</p>
+            <h2 class="text-xl font-bold mb-2 section-title">Subscribe to Our Newsletter</h2>
+            <p class="text-xs md:text-sm max-w-xl mx-auto mb-4 font-sans">Stay updated with the latest trends and exclusive offers. Subscribe to our newsletter and get 10% off your first order.</p>
         </div>
     </section>
 
@@ -478,13 +474,13 @@
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-2">VOGUE<span class="text-accent">THREADS</span></h3>
-                    <p class="text-gray-400 text-sm">Elevating your style with quality fashion since 2010.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2 brand-font">VOGUE<span class="text-accent">THREADS</span></h3>
+                    <p class="text-gray-400 text-sm font-sans">Elevating your style with quality fashion since 2010.</p>
                 </div>
                 
                 <div>
-                    <h4 class="font-bold text-lg mb-2">Shop</h4>
-                    <ul class="space-y-2 text-xs md:text-sm">
+                    <h4 class="font-bold text-lg mb-2 font-serif">Shop</h4>
+                    <ul class="space-y-2 text-xs md:text-sm font-sans">
                         <li><a href="#" class="text-gray-400 hover:text-white transition">Women</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition">Men</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition">Accessories</a></li>
@@ -493,8 +489,8 @@
                 </div>
                 
                 <div>
-                    <h4 class="font-bold text-lg mb-2">Company</h4>
-                    <ul class="space-y-2 text-xs md:text-sm">
+                    <h4 class="font-bold text-lg mb-2 font-serif">Company</h4>
+                    <ul class="space-y-2 text-xs md:text-sm font-sans">
                         <li><a href="#" class="text-gray-400 hover:text-white transition">About Us</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
@@ -503,7 +499,7 @@
                 </div>
                 
                 <div>
-                    <h4 class="font-bold text-lg mb-2">Connect</h4>
+                    <h4 class="font-bold text-lg mb-2 font-serif">Connect</h4>
                     <div class="flex space-x-4 mb-4">
                         <a href="#" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent transition">
                             <i class="fab fa-facebook-f"></i>
@@ -518,7 +514,7 @@
                             <i class="fab fa-pinterest-p"></i>
                         </a>
                     </div>
-                    <p class="text-gray-400 text-xs md:text-sm">Accepted Payment Methods</p>
+                    <p class="text-gray-400 text-xs md:text-sm font-sans">Accepted Payment Methods</p>
                     <div class="flex space-x-2 mt-2">
                         <i class="fab fa-cc-visa text-2xl"></i>
                         <i class="fab fa-cc-mastercard text-2xl"></i>
@@ -528,7 +524,7 @@
                 </div>
             </div>
             
-            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400 text-xs md:text-sm">
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400 text-xs md:text-sm font-sans">
                 <p>&copy; 2025 VogueThreads. All rights reserved.</p>
             </div>
         </div>
@@ -537,7 +533,7 @@
     <!-- Cart Notification -->
     <div class="fixed top-20 right-4 bg-white shadow-lg rounded-lg p-4 animate-fade-in hidden" style="width: 320px;" id="cartNotification">
         <div class="flex justify-between items-start mb-2">
-            <h4 class="font-bold">Added to Cart</h4>
+            <h4 class="font-bold font-serif">Added to Cart</h4>
             <button class="text-gray-500 hover:text-primary" id="closeNotification">
                 <i class="fas fa-times"></i>
             </button>
@@ -545,14 +541,14 @@
         <div class="flex">
             <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Product" class="w-16 h-16 object-cover rounded" id="notificationImage">
             <div class="ml-4">
-                <p class="font-medium" id="notificationName">Minimalist Oversized T-Shirt</p>
-                <p class="text-gray-600">Qty: 1</p>
-                <p class="font-bold mt-1" id="notificationPrice">$49.99</p>
+                <p class="font-medium product-title" id="notificationName">Minimalist Oversized T-Shirt</p>
+                <p class="text-gray-600 font-sans">Qty: 1</p>
+                <p class="font-bold mt-1 price-font" id="notificationPrice">$49.99</p>
             </div>
         </div>
         <div class="flex mt-4 space-x-2">
-            <button class="flex-1 text-center bg-primary text-white py-2 rounded" id="viewCartButton">View Cart</button>
-            <button class="flex-1 text-center bg-accent text-white py-2 rounded">Checkout</button>
+            <button class="flex-1 text-center bg-primary text-white py-2 rounded font-sans" id="viewCartButton">View Cart</button>
+            <button class="flex-1 text-center bg-accent text-white py-2 rounded font-sans">Checkout</button>
         </div>
     </div>
 
@@ -576,17 +572,24 @@
         const notificationName = document.getElementById('notificationName');
         const notificationPrice = document.getElementById('notificationPrice');
         
+        // Hero Slider Elements
+        const heroSlides = document.querySelectorAll('.hero-slide');
+        const slideIndicators = document.querySelectorAll('.slide-indicator');
+        let currentSlide = 0;
+        let slideInterval;
+        
         // Mobile Menu Toggle
         mobileMenuButton.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('animate-slide-down');
         });
         
-        // Close Notification
+        // Cart Notification
         closeNotification.addEventListener('click', () => {
             cartNotification.classList.add('hidden');
         });
         
-        // Cart Toggle
+        // Cart Sidebar Toggle
         cartIcon.addEventListener('click', (e) => {
             e.preventDefault();
             cartSidebar.classList.add('open');
@@ -603,7 +606,6 @@
             cartOverlay.classList.remove('open');
         });
         
-        // View Cart Button in Notification
         viewCartButton.addEventListener('click', () => {
             cartSidebar.classList.add('open');
             cartOverlay.classList.add('open');
@@ -644,10 +646,10 @@
                 notificationPrice.textContent = `$${price.toFixed(2)}`;
                 cartNotification.classList.remove('hidden');
                 
-                // Auto hide notification after 5 seconds
+                // Auto hide notification after 4 seconds
                 setTimeout(() => {
                     cartNotification.classList.add('hidden');
-                }, 5000);
+                }, 4000);
             });
         });
         
@@ -657,7 +659,7 @@
             updateCart();
         });
         
-        // Update Cart
+        // Update Cart UI
         function updateCart() {
             // Update cart count
             const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
@@ -668,100 +670,127 @@
             
             if (cart.length === 0) {
                 emptyCartMessage.classList.remove('hidden');
-                cartItems.appendChild(emptyCartMessage);
-            } else {
-                emptyCartMessage.classList.add('hidden');
-                
-                cart.forEach(item => {
-                    const cartItem = document.createElement('div');
-                    cartItem.className = 'flex py-4 border-b';
-                    cartItem.innerHTML = `
-                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
-                        <div class="ml-4 flex-1">
-                            <h4 class="font-medium">${item.name}</h4>
-                            <p class="text-gray-600">$${item.price.toFixed(2)}</p>
-                            <div class="flex items-center mt-2">
-                                <button class="decrease-quantity text-gray-500 px-2" data-id="${item.id}">-</button>
-                                <span class="quantity mx-2">${item.quantity}</span>
-                                <button class="increase-quantity text-gray-500 px-2" data-id="${item.id}">+</button>
-                            </div>
-                        </div>
-                        <button class="remove-item text-gray-400 hover:text-red-500" data-id="${item.id}">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    `;
-                    
-                    cartItems.appendChild(cartItem);
-                });
-                
-                // Add event listeners to quantity buttons
-                document.querySelectorAll('.increase-quantity').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const id = button.getAttribute('data-id');
-                        const item = cart.find(item => item.id === id);
-                        item.quantity += 1;
-                        updateCart();
-                    });
-                });
-                
-                document.querySelectorAll('.decrease-quantity').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const id = button.getAttribute('data-id');
-                        const item = cart.find(item => item.id === id);
-                        if (item.quantity > 1) {
-                            item.quantity -= 1;
-                        } else {
-                            cart = cart.filter(item => item.id !== id);
-                        }
-                        updateCart();
-                    });
-                });
-                
-                document.querySelectorAll('.remove-item').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const id = button.getAttribute('data-id');
-                        cart = cart.filter(item => item.id !== id);
-                        updateCart();
-                    });
-                });
+                cartSubtotal.textContent = '$0.00';
+                return;
             }
             
+            emptyCartMessage.classList.add('hidden');
+            
+            let subtotal = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'flex py-4 border-b';
+                cartItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                    <div class="ml-4 flex-1">
+                        <h4 class="font-medium product-title">${item.name}</h4>
+                        <div class="flex items-center mt-1">
+                            <button class="text-gray-500 decrease-quantity" data-id="${item.id}">
+                                <i class="fas fa-minus text-xs"></i>
+                            </button>
+                            <span class="mx-2 text-sm font-sans">${item.quantity}</span>
+                            <button class="text-gray-500 increase-quantity" data-id="${item.id}">
+                                <i class="fas fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold price-font">$${itemTotal.toFixed(2)}</p>
+                        <button class="text-red-500 mt-2 remove-item" data-id="${item.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                cartItems.appendChild(cartItem);
+            });
+            
             // Update subtotal
-            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
             cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+            
+            // Add event listeners to quantity buttons
+            document.querySelectorAll('.increase-quantity').forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.getAttribute('data-id');
+                    const item = cart.find(item => item.id === id);
+                    item.quantity += 1;
+                    updateCart();
+                });
+            });
+            
+            document.querySelectorAll('.decrease-quantity').forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.getAttribute('data-id');
+                    const item = cart.find(item => item.id === id);
+                    
+                    if (item.quantity > 1) {
+                        item.quantity -= 1;
+                    } else {
+                        cart = cart.filter(item => item.id !== id);
+                    }
+                    
+                    updateCart();
+                });
+            });
+            
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.getAttribute('data-id');
+                    cart = cart.filter(item => item.id !== id);
+                    updateCart();
+                });
+            });
         }
         
-        // Hero Slider
-        const slides = document.querySelectorAll('.hero-slide');
-        const indicators = document.querySelectorAll('.slide-indicator');
-        let currentSlide = 0;
-        
+        // Hero Slider Functionality
         function showSlide(index) {
-            slides.forEach(slide => slide.classList.remove('active'));
-            indicators.forEach(indicator => indicator.classList.remove('active'));
+            // Hide all slides
+            heroSlides.forEach(slide => slide.classList.remove('active'));
+            slideIndicators.forEach(indicator => indicator.classList.remove('active'));
             
-            slides[index].classList.add('active');
-            indicators[index].classList.add('active');
+            // Show selected slide
+            heroSlides[index].classList.add('active');
+            slideIndicators[index].classList.add('active');
+            
             currentSlide = index;
         }
         
         function nextSlide() {
-            let nextIndex = (currentSlide + 1) % slides.length;
-            showSlide(nextIndex);
+            let next = currentSlide + 1;
+            if (next >= heroSlides.length) next = 0;
+            showSlide(next);
         }
         
-        // Add click events to indicators
-        indicators.forEach((indicator, index) => {
+        // Set up slide indicators
+        slideIndicators.forEach((indicator, index) => {
             indicator.addEventListener('click', () => {
+                clearInterval(slideInterval);
                 showSlide(index);
+                startSlideInterval();
             });
         });
         
-        // Auto slide every 5 seconds
-        setInterval(nextSlide, 5000);
+        function startSlideInterval() {
+            slideInterval = setInterval(nextSlide, 5000);
+        }
         
-        // Initialize cart
-        updateCart();
+        // Initialize slider
+        showSlide(0);
+        startSlideInterval();
+        
+        // Pause slider on hover
+        const heroSlider = document.querySelector('.hero-slider');
+        heroSlider.addEventListener('mouseenter', () => {
+            clearInterval(slideInterval);
+        });
+        
+        heroSlider.addEventListener('mouseleave', () => {
+            startSlideInterval();
+        });
     </script>
 </body>
 </html>
