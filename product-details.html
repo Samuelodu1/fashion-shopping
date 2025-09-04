@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimalist Oversized T-Shirt | VogueThreads</title>
+    <title>Product Details | VogueThreads</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -19,6 +19,7 @@
                     animation: {
                         'fade-in': 'fadeIn 0.5s ease forwards',
                         'slide-down': 'slideDown 0.3s ease forwards',
+                        'slide-in-right': 'slideInRight 0.3s ease forwards',
                     },
                     keyframes: {
                         fadeIn: {
@@ -28,6 +29,10 @@
                         slideDown: {
                             from: { opacity: 0, transform: 'translateY(-20px)' },
                             to: { opacity: 1, transform: 'translateY(0)' },
+                        },
+                        slideInRight: {
+                            from: { opacity: 0, transform: 'translateX(20px)' },
+                            to: { opacity: 1, transform: 'translateX(0)' },
                         }
                     }
                 }
@@ -49,7 +54,27 @@
             background-image: linear-gradient(90deg, hsl(0, 0%, 0%), hsl(330, 100%, 60%));
         }
         
-        /* Product detail page styles */
+        /* Cart sidebar styles */
+        .cart-sidebar {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .cart-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        
+        .cart-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
         .thumbnail {
             opacity: 0.7;
             transition: opacity 0.3s ease;
@@ -61,8 +86,15 @@
         }
         
         .size-option {
+            border: 1px solid #e5e5e5;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
+        }
+        
+        .size-option:hover {
+            border-color: #1a1a1a;
         }
         
         .size-option.selected {
@@ -77,14 +109,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f8f8f8;
             border: 1px solid #e5e5e5;
+            background: white;
             cursor: pointer;
             transition: all 0.2s ease;
         }
         
         .quantity-btn:hover {
-            background-color: #e5e5e5;
+            background: #f8f8f8;
         }
         
         .quantity-input {
@@ -95,48 +127,6 @@
             border-bottom: 1px solid #e5e5e5;
             border-left: none;
             border-right: none;
-        }
-        
-        /* Image zoom on hover */
-        .product-image-container {
-            overflow: hidden;
-            height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .product-image {
-            transition: transform 0.3s ease;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .product-image:hover {
-            transform: scale(1.03);
-        }
-        
-        /* Smooth transitions */
-        .transition-all {
-            transition: all 0.3s ease;
-        }
-        
-        /* Sticky add to cart */
-        .sticky-add-to-cart {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-            z-index: 40;
-        }
-        
-        .sticky-add-to-cart.visible {
-            transform: translateY(0);
         }
     </style>
 </head>
@@ -164,13 +154,9 @@
                         <i class="fas fa-search absolute right-3 top-2.5 text-gray-400"></i>
                     </div>
                     
-                    <a href="#" class="relative">
+                    <a href="#" class="relative" id="cartIcon">
                         <i class="fas fa-shopping-cart text-xl"></i>
-                        <span class="absolute -top-2 -right-2 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
-                    </a>
-                    
-                    <a href="#">
-                        <i class="fas fa-user text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" id="cartCount">0</span>
                     </a>
                     
                     <button class="md:hidden" id="mobileMenuButton">
@@ -196,472 +182,272 @@
         </div>
     </header>
 
-    <!-- Breadcrumb -->
-    <div class="container mx-auto px-4 py-4">
-        <nav class="text-sm">
-            <ol class="list-none p-0 inline-flex">
-                <li class="flex items-center">
-                    <a href="index.html" class="text-gray-500 hover:text-accent">Home</a>
-                    <span class="mx-2">/</span>
-                </li>
-                <li class="flex items-center">
-                    <a href="#" class="text-gray-500 hover:text-accent">Women</a>
-                    <span class="mx-2">/</span>
-                </li>
-                <li class="flex items-center">
-                    <a href="#" class="text-gray-500 hover:text-accent">Tops</a>
-                    <span class="mx-2">/</span>
-                </li>
-                <li class="text-primary">Minimalist Oversized T-Shirt</li>
-            </ol>
-        </nav>
-    </div>
-
-    <!-- Product Details Section -->
-    <section class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Product Images -->
-            <div>
-                <!-- Main Image -->
-                <div class="mb-4 rounded-lg overflow-hidden">
-                    <div class="product-image-container">
-                        <img id="mainImage" src="https://nitawears.com/uploads/68aee762dbd91_IMG_4247.jpeg" alt="Minimalist Oversized T-Shirt" class="product-image">
-                    </div>
-                </div>
-                
-                <!-- Thumbnails -->
-                <div class="grid grid-cols-4 gap-2">
-                    <div class="thumbnail active cursor-pointer" data-image="https://nitawears.com/uploads/68aee762dbd91_IMG_4247.jpeg">
-                        <img src="https://nitawears.com/uploads/68aee762dbd91_IMG_4247.jpeg" alt="Product thumbnail 1" class="w-full h-20 object-cover rounded">
-                    </div>
-                    <div class="thumbnail cursor-pointer" data-image="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
-                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Product thumbnail 2" class="w-full h-20 object-cover rounded">
-                    </div>
-                    <div class="thumbnail cursor-pointer" data-image="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
-                        <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Product thumbnail 3" class="w-full h-20 object-cover rounded">
-                    </div>
-                    <div class="thumbnail cursor-pointer" data-image="https://images.unsplash.com/photo-1503341338985-b047bb81f5f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
-                        <img src="https://images.unsplash.com/photo-1503341338985-b047bb81f5f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Product thumbnail 4" class="w-full h-20 object-cover rounded">
-                    </div>
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay fixed inset-0 bg-black bg-opacity-50 z-50" id="cartOverlay"></div>
+    <div class="cart-sidebar fixed top-0 right-0 h-full w-full md:w-96 bg-white z-50 shadow-xl" id="cartSidebar">
+        <div class="h-full flex flex-col">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h2 class="text-xl font-bold">Your Cart</h2>
+                <button id="closeCart" class="text-gray-500 hover:text-primary">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-4" id="cartItems">
+                <!-- Cart items will be added here dynamically -->
+                <div class="text-center py-8 text-gray-500" id="emptyCartMessage">
+                    <i class="fas fa-shopping-cart text-4xl mb-4 opacity-30"></i>
+                    <p>Your cart is empty</p>
                 </div>
             </div>
             
-            <!-- Product Info -->
-            <div>
-                <h1 class="text-3xl font-bold mb-2">Minimalist Oversized T-Shirt</h1>
-                
-                <div class="flex items-center mb-4">
-                    <div class="flex text-yellow-400 mr-2">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <span class="text-sm text-gray-500">(42 reviews)</span>
-                    <span class="mx-3 text-gray-300">|</span>
-                    <span class="text-sm text-green-600 font-medium">In Stock</span>
+            <div class="p-4 border-t">
+                <div class="flex justify-between mb-4">
+                    <span class="font-medium">Subtotal</span>
+                    <span class="font-bold" id="cartSubtotal">$0.00</span>
                 </div>
-                
-                <div class="mb-6">
-                    <span class="text-2xl font-bold">$49.99</span>
-                    <span class="text-lg text-gray-500 line-through ml-2">$69.99</span>
-                    <span class="ml-3 bg-red-100 text-red-600 text-sm font-medium px-2 py-1 rounded">Save 29%</span>
+                <div class="flex space-x-2">
+                    <button id="clearCart" class="flex-1 py-2 border border-gray-300 rounded hover:bg-gray-100 transition">Clear Cart</button>
+                    <button class="flex-1 bg-accent text-white py-2 rounded hover:bg-opacity-90 transition">Checkout</button>
                 </div>
-                
-                <p class="text-gray-600 mb-6">
-                    Our minimalist oversized t-shirt is crafted from premium cotton for ultimate comfort. 
-                    Features a relaxed fit with dropped shoulders and a slightly longer length for a modern, 
-                    stylish look. Perfect for casual wear or dressing up with accessories.
-                </p>
-                
-                <!-- Size Selection -->
-                <div class="mb-6">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-medium">Size</h3>
-                        <a href="#" class="text-sm text-gray-500 hover:underline">Size Guide</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="py-8 md:px-10">
+        <div class="container mx-auto px-4">
+            <!-- Breadcrumbs -->
+            <nav class="text-sm text-gray-500 mb-8">
+                <a href="index.html" class="hover:text-accent">Home</a> > 
+                <a href="#" class="hover:text-accent">Women</a> > 
+                <a href="#" class="hover:text-accent">Tops</a> > 
+                <span>Minimalist Oversized T-Shirt</span>
+            </nav>
+            
+            <!-- Product Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+                <!-- Product Images -->
+                <div>
+                    <!-- Main Image -->
+                    <div class="mb-4 rounded-lg overflow-hidden md:w-[520px] border-2 border-gray-200 hover:border-pink-400">
+                        <img src="https://nitawears.com/uploads/68aee762dbd91_IMG_4247.jpeg" alt="Minimalist Oversized T-Shirt" class="w-full h-[355px] md:h-[550px] object-fit" id="mainImage">
                     </div>
-                    <div class="flex flex-wrap gap-2">
-                        <div class="size-option border rounded-md px-4 py-2 text-sm selected" data-size="S">S</div>
-                        <div class="size-option border rounded-md px-4 py-2 text-sm" data-size="M">M</div>
-                        <div class="size-option border rounded-md px-4 py-2 text-sm" data-size="L">L</div>
-                        <div class="size-option border rounded-md px-4 py-2 text-sm" data-size="XL">XL</div>
+                    
+                    <!-- Thumbnails -->
+                    <div class="grid grid-cols-4 gap-4 md:mr-[175px]">
+                        <div class="thumbnail active" data-image="https://nitawears.com/uploads/68aee762dbd91_IMG_4247.jpeg">
+                            <img src="https://nitawears.com/uploads/68aee762dbd91_IMG_4247.jpeg" alt="Product view 1" class="w-full md:w-[200px] h-20 object-cover rounded border-2 border-gray-200 hover:border-pink-400">
+                        </div>
+                        <div class="thumbnail" data-image="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
+                            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Product view 2" class="w-full md:w-[200px] h-20 object-cover rounded border-2 border-gray-200 hover:border-pink-400">
+                        </div>
+                        <div class="thumbnail" data-image="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
+                            <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Product view 3" class="w-full md:w-[200px] h-20 object-cover rounded border-2 border-gray-200 hover:border-pink-400">
+                        </div>
+                        <div class="thumbnail" data-image="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
+                            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Product view 4" class="w-full md:w-[200px] h-20 object-cover rounded border-2 border-gray-200 hover:border-pink-400">
+                        </div>
                     </div>
-                    <p class="text-red-500 text-sm mt-2 hidden" id="sizeError">Please select a size</p>
-                </div>
-                
-                <!-- Color Selection -->
-                <div class="mb-6">
-                    <h3 class="font-medium mb-3">Color: <span id="selectedColor">Black</span></h3>
-                    <div class="flex gap-3">
-                        <div class="color-option w-8 h-8 rounded-full bg-gray-800 border-2 border-white shadow cursor-pointer selected" data-color="Black" title="Black"></div>
-                        <div class="color-option w-8 h-8 rounded-full bg-gray-300 border-2 border-white shadow cursor-pointer" data-color="White" title="White"></div>
-                        <div class="color-option w-8 h-8 rounded-full bg-gray-500 border-2 border-white shadow cursor-pointer" data-color="Gray" title="Gray"></div>
-                    </div>
-                </div>
-                
-                <!-- Quantity and Add to Cart -->
-                <div class="mb-6">
-                    <h3 class="font-medium mb-3">Quantity</h3>
-                    <div class="flex items-center max-w-xs">
-                        <button class="quantity-btn rounded-l-md" id="decreaseQty">-</button>
-                        <input type="text" value="1" class="quantity-input" id="quantity">
-                        <button class="quantity-btn rounded-r-md" id="increaseQty">+</button>
-                    </div>
-                </div>
-                
-                <div class="flex flex-col sm:flex-row gap-4 mb-8">
-                    <button id="addToCart" class="bg-accent text-white px-8 py-3 rounded-full font-medium hover:bg-opacity-90 transition flex-1 flex items-center justify-center">
-                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
-                    </button>
-                    <button class="bg-primary text-white px-8 py-3 rounded-full font-medium hover:bg-opacity-90 transition flex-1">
-                        Buy Now
-                    </button>
                 </div>
                 
                 <!-- Product Details -->
-                <div class="border-t border-gray-200 pt-6">
-                    <div class="flex flex-col space-y-4">
-                        <div class="flex items-center">
-                            <i class="fas fa-truck text-gray-500 mr-3"></i>
-                            <span class="text-sm">Free shipping on orders over $50</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-undo text-gray-500 mr-3"></i>
-                            <span class="text-sm">30-day easy returns</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-shield-alt text-gray-500 mr-3"></i>
-                            <span class="text-sm">2-year warranty</span>
-                        </div>
+                <div class="md:pr-12">
+                    <h1 class="text-xl md:text-3xl font-bold mb-2">Minimalist Oversized T-Shirt</h1>
+                    
+                    <div class="mb-6">
+                        <span class="text-xl md:text-2xl font-bold">$49.99</span>
+                        <span class="text-sm md:text-lg text-gray-500 line-through ml-2">$69.99</span>
+                        <span class="bg-red-100 text-red-600 text-xs md:text-sm font-medium ml-3 px-2 py-1 rounded">30% OFF</span>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sticky Add to Cart (Mobile) -->
-    <div class="sticky-add-to-cart md:hidden" id="stickyAddToCart">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="font-medium">Minimalist Oversized T-Shirt</p>
-                    <div class="flex items-center">
-                        <span class="text-lg font-bold">$49.99</span>
-                        <span class="text-sm text-gray-500 line-through ml-2">$69.99</span>
-                    </div>
-                </div>
-                <button class="bg-accent text-white px-4 py-2 rounded-full font-medium hover:bg-opacity-90 transition">
-                    Add to Cart
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Product Description and Details -->
-    <section class="container mx-auto px-4 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Product Description -->
-            <div class="md:col-span-2">
-                <h2 class="text-2xl font-bold mb-6">Product Description</h2>
-                
-                <div class="prose max-w-none">
-                    <p class="mb-4">
-                        Our Minimalist Oversized T-Shirt is the perfect addition to your wardrobe. 
-                        Made from 100% premium combed cotton, this t-shirt offers exceptional softness 
-                        and durability. The relaxed fit provides maximum comfort while maintaining a 
-                        stylish silhouette.
+                    
+                    <p class="text-sm md:text-base text-gray-700 mb-8">
+                        Our minimalist oversized t-shirt is crafted from premium cotton for ultimate comfort. Featuring a relaxed fit and contemporary design, this versatile piece can be dressed up or down for any occasion. The perfect addition to your casual wardrobe.
                     </p>
                     
-                    <h3 class="text-lg font-medium mb-2">Features:</h3>
-                    <ul class="list-disc pl-5 mb-4">
-                        <li>100% premium combed cotton for superior comfort</li>
-                        <li>Relaxed, oversized fit with dropped shoulders</li>
-                        <li>Ribbed crew neckline for durability</li>
-                        <li>Double-stitched seams for extra longevity</li>
-                        <li>Slightly longer length for modern styling</li>
-                        <li>Pre-shrunk fabric to maintain shape after washing</li>
-                    </ul>
+                    <!-- Size Selection -->
+                    <div class="mb-8">
+                        <h3 class="font-bold mb-3">Size</h3>
+                        <div class="flex flex-wrap gap-3 text-sm">
+                            <div class="size-option selected" data-size="XS">XS</div>
+                            <div class="size-option" data-size="S">S</div>
+                            <div class="size-option" data-size="M">M</div>
+                            <div class="size-option" data-size="L">L</div>
+                            <div class="size-option" data-size="XL">XL</div>
+                        </div>
+                        <a href="#" class="text-sm text-gray-500 mt-2 inline-block hover:underline">Size Guide</a>
+                    </div>
                     
-                    <h3 class="text-lg font-medium mb-2">Care Instructions:</h3>
-                    <ul class="list-disc pl-5">
-                        <li>Machine wash cold with like colors</li>
-                        <li>Tumble dry low or hang to dry</li>
-                        <li>Do not bleach</li>
-                        <li>Iron on low heat if needed</li>
-                    </ul>
+                    <!-- Quantity and Add to Cart -->
+                    <div class="mb-8">
+                        <h3 class="font-bold mb-3">Quantity</h3>
+                        <div class="flex items-center mb-4">
+                            <button class="quantity-btn rounded-l" id="decreaseQty">-</button>
+                            <input type="number" value="1" min="1" max="10" class="quantity-input" id="quantity">
+                            <button class="quantity-btn rounded-r" id="increaseQty">+</button>
+                        </div>
+                        
+                        <button class="w-full bg-accent text-white py-4 rounded font-medium hover:bg-opacity-90 transition mb-4" id="addToCart">
+                           <i class="far fa-heart mr-2"></i> Add to Cart
+                        </button>
+                    </div>
+                    
+                    <!-- Product Details Accordion -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <div class="mb-4">
+                            <button class="flex justify-between items-center w-full text-left font-medium" onclick="toggleAccordion('details')">
+                                <span>Product Details</span>
+                                <i class="fas fa-chevron-down transform transition-transform" id="detailsIcon"></i>
+                            </button>
+                            <div class="mt-2 text-gray-600 hidden" id="detailsContent">
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li>100% premium cotton</li>
+                                    <li>Relaxed oversized fit</li>
+                                    <li>Ribbed crewneck</li>
+                                    <li>Double-stitched seams for durability</li>
+                                    <li>Machine wash cold, tumble dry low</li>
+                                    <li>Imported</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <button class="flex justify-between items-center w-full text-left font-medium" onclick="toggleAccordion('shipping')">
+                                <span>Shipping & Returns</span>
+                                <i class="fas fa-chevron-down transform transition-transform" id="shippingIcon"></i>
+                            </button>
+                            <div class="mt-2 text-gray-600 hidden" id="shippingContent">
+                                <p>Free standard shipping on orders over $50. Express shipping available. Easy returns within 30 days of purchase.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             
-            <!-- Product Specifications -->
-            <div>
-                <h2 class="text-2xl font-bold mb-6">Specifications</h2>
+            <!-- Related Products -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-8">You May Also Like</h2>
                 
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="font-medium text-gray-500">Material</h3>
-                        <p>100% Combed Cotton</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Product Card -->
+                    <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+                        <a href="#" class="block relative overflow-hidden rounded-lg p-2">
+                            <img src="https://nitawears.com/uploads/68aba0559db35_IMG_4898.jpeg" alt="Product" class="w-full h-[325px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                        </a>
+                        <div class="p-4">
+                            <a href="#" class="font-medium hover:text-accent transition">Slim Fit Denim Jacket</a>
+                            <div class="flex items-center mt-2">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span class="text-xs text-gray-500 ml-2">(28)</span>
+                            </div>
+                            <div class="mt-3">
+                                <span class="font-bold">$89.99</span>
+                            </div>
+                            <div class="relative mt-4">
+                                <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="2" data-name="Slim Fit Denim Jacket" data-price="89.99" data-image="https://nitawears.com/uploads/68aba0559db35_IMG_4898.jpeg">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div>
-                        <h3 class="font-medium text-gray-500">Fit</h3>
-                        <p>Oversized</p>
+                    <!-- Product Card -->
+                    <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+                        <a href="#" class="block relative overflow-hidden rounded-lg p-2">
+                            <img src="https://nitawears.com/uploads/68af8bf82e057_IMG_3432.jpeg" alt="Product" class="w-full h-[325px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                            <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded">Sale</div>
+                        </a>
+                        <div class="p-4">
+                            <a href="#" class="font-medium hover:text-accent transition">Classic Patterned Shirt</a>
+                            <div class="flex items-center mt-2">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-xs text-gray-500 ml-2">(65)</span>
+                            </div>
+                            <div class="mt-3 flex justify-between items-center">
+                                <span class="font-bold">$59.99</span>
+                                <span class="text-sm text-gray-500 line-through">$79.99</span>
+                            </div>
+                            <div class="relative mt-4">
+                                <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="3" data-name="Classic Patterned Shirt" data-price="59.99" data-image="https://nitawears.com/uploads/68af8bf82e057_IMG_3432.jpeg">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div>
-                        <h3 class="font-medium text-gray-500">Neckline</h3>
-                        <p>Crew Neck</p>
+                    <!-- Product Card -->
+                    <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+                        <a href="#" class="block relative overflow-hidden rounded-lg p-2">
+                            <img src="https://nitawears.com/uploads/68af9c29b9cea_IMG_3117.jpeg" alt="Product" class="w-full h-[325px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                        </a>
+                        <div class="p-4">
+                            <a href="#" class="font-medium hover:text-accent transition">Tailored Formal Blazer</a>
+                            <div class="flex items-center mt-2">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-xs text-gray-500 ml-2">(37)</span>
+                            </div>
+                            <div class="mt-3">
+                                <span class="font-bold">$129.99</span>
+                            </div>
+                            <div class="relative mt-4">
+                                <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="4" data-name="Tailored Formal Blazer" data-price="129.99" data-image="https://nitawears.com/uploads/68af9c29b9cea_IMG_3117.jpeg">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div>
-                        <h3 class="font-medium text-gray-500">Sleeve</h3>
-                        <p>Short Sleeve</p>
-                    </div>
-                    
-                    <div>
-                        <h3 class="font-medium text-gray-500">Length</h3>
-                        <p>Regular</p>
-                    </div>
-                    
-                    <div>
-                        <h3 class="font-medium text-gray-500">Weight</h3>
-                        <p>180 GSM</p>
-                    </div>
-                    
-                    <div>
-                        <h3 class="font-medium text-gray-500">Origin</h3>
-                        <p>Made in Portugal</p>
+                    <!-- Product Card -->
+                    <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+                        <a href="#" class="block relative overflow-hidden rounded-lg p-2">
+                            <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Product" class="w-full h-[325px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
+                            <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded">New</div>
+                        </a>
+                        <div class="p-4">
+                            <a href="#" class="font-medium hover:text-accent transition">Casual Linen Shirt</a>
+                            <div class="flex items-center mt-2">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-xs text-gray-500 ml-2">(18)</span>
+                            </div>
+                            <div class="mt-3">
+                                <span class="font-bold">$64.99</span>
+                            </div>
+                            <div class="relative mt-4">
+                                <button class="absolute bottom-28 right-2 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors add-to-cart" data-id="5" data-name="Casual Linen Shirt" data-price="64.99" data-image="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
-    </section>
-
-    <!-- Customer Reviews -->
-    <section class="container mx-auto px-4 py-12 bg-secondary rounded-lg">
-        <h2 class="text-2xl font-bold mb-8 text-center">Customer Reviews</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <!-- Review Summary -->
-            <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                <div class="text-5xl font-bold text-accent mb-2">4.8</div>
-                <div class="flex text-yellow-400 justify-center mb-2">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-                <p class="text-gray-600">Based on 42 reviews</p>
-            </div>
-            
-            <!-- Rating Breakdown -->
-            <div class="bg-white p-6 rounded-lg shadow-md md:col-span-2">
-                <div class="space-y-2">
-                    <div class="flex items-center">
-                        <span class="w-16">5 stars</span>
-                        <div class="flex-1 h-2 bg-gray-200 rounded-full mx-2">
-                            <div class="h-2 bg-yellow-400 rounded-full" style="width: 75%"></div>
-                        </div>
-                        <span class="w-16 text-right">75%</span>
-                    </div>
-                    <div class="flex items-center">
-                        <span class="w-16">4 stars</span>
-                        <div class="flex-1 h-2 bg-gray-200 rounded-full mx-2">
-                            <div class="h-2 bg-yellow-400 rounded-full" style="width: 15%"></div>
-                        </div>
-                        <span class="w-16 text-right">15%</span>
-                    </div>
-                    <div class="flex items-center">
-                        <span class="w-16">3 stars</span>
-                        <div class="flex-1 h-2 bg-gray-200 rounded-full mx-2">
-                            <div class="h-2 bg-yellow-400 rounded-full" style="width: 7%"></div>
-                        </div>
-                        <span class="w-16 text-right">7%</span>
-                    </div>
-                    <div class="flex items-center">
-                        <span class="w-16">2 stars</span>
-                        <div class="flex-1 h-2 bg-gray-200 rounded-full mx-2">
-                            <div class="h-2 bg-yellow-400 rounded-full" style="width: 2%"></div>
-                        </div>
-                        <span class="w-16 text-right">2%</span>
-                    </div>
-                    <div class="flex items-center">
-                        <span class="w-16">1 star</span>
-                        <div class="flex-1 h-2 bg-gray-200 rounded-full mx-2">
-                            <div class="h-2 bg-yellow-400 rounded-full" style="width: 1%"></div>
-                        </div>
-                        <span class="w-16 text-right">1%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Individual Reviews -->
-        <div class="space-y-6">
-            <!-- Review 1 -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h4 class="font-medium">Sarah Johnson</h4>
-                        <div class="flex text-yellow-400 mt-1">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <span class="text-sm text-gray-500">2 days ago</span>
-                </div>
-                <p class="text-gray-600">
-                    I absolutely love this t-shirt! The fabric is so soft and comfortable, and the oversized fit is perfect. 
-                    I ordered my usual size and it fits exactly as I hoped it would. Will definitely be purchasing more colors!
-                </p>
-            </div>
-            
-            <!-- Review 2 -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h4 class="font-medium">Michael Chen</h4>
-                        <div class="flex text-yellow-400 mt-1">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                    <span class="text-sm text-gray-500">1 week ago</span>
-                </div>
-                <p class="text-gray-600">
-                    Great quality shirt. The material is thick enough that it doesn't feel cheap but still breathable. 
-                    The fit is exactly as described - oversized but still stylish. I've washed it a few times and it has held up well.
-                </p>
-            </div>
-        </div>
-        
-        <div class="text-center mt-8">
-            <button class="bg-primary text-white px-6 py-2 rounded-full font-medium hover:bg-opacity-90 transition">
-                Load More Reviews
-            </button>
-        </div>
-    </section>
-
-    <!-- Related Products -->
-    <section class="container mx-auto px-4 py-16">
-        <h2 class="text-3xl font-bold text-center mb-12">You Might Also Like</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <!-- Product Card -->
-            <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl cursor-pointer">
-                <div class="relative overflow-hidden rounded-lg p-2">
-                    <img src="https://nitawears.com/uploads/68aba0559db35_IMG_4898.jpeg" alt="Product" class="w-full h-80 object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
-                    <button class="absolute bottom-3 right-3 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors">
-                        <i class="fas fa-shopping-cart"></i>
-                    </button>
-                </div>
-                <div class="p-4">
-                    <a href="#" class="font-medium hover:text-accent transition">Slim Fit Denim Jacket</a>
-                    <div class="flex items-center mt-2">
-                        <div class="flex text-yellow-400">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <span class="text-xs text-gray-500 ml-2">(28)</span>
-                    </div>
-                    <div class="mt-3">
-                        <span class="font-bold">$89.99</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Product Card -->
-            <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl cursor-pointer">
-                <div class="relative overflow-hidden rounded-lg p-2">
-                    <img src="https://nitawears.com/uploads/68af8bf82e057_IMG_3432.jpeg" alt="Product" class="w-full h-80 object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
-                    <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded">Sale</div>
-                    <button class="absolute bottom-3 right-3 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors">
-                        <i class="fas fa-shopping-cart"></i>
-                    </button>
-                </div>
-                <div class="p-4">
-                    <a href="#" class="font-medium hover:text-accent transition">Classic Patterned Shirt</a>
-                    <div class="flex items-center mt-2">
-                        <div class="flex text-yellow-400">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <span class="text-xs text-gray-500 ml-2">(65)</span>
-                    </div>
-                    <div class="mt-3 flex justify-between items-center">
-                        <span class="font-bold">$59.99</span>
-                        <span class="text-sm text-gray-500 line-through">$79.99</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Product Card -->
-            <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl cursor-pointer">
-                <div class="relative overflow-hidden rounded-lg p-2">
-                    <img src="https://nitawears.com/uploads/68af9c29b9cea_IMG_3117.jpeg" alt="Product" class="w-full h-80 object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
-                    <button class="absolute bottom-3 right-3 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors">
-                        <i class="fas fa-shopping-cart"></i>
-                    </button>
-                </div>
-                <div class="p-4">
-                    <a href="#" class="font-medium hover:text-accent transition">Tailored Formal Blazer</a>
-                    <div class="flex items-center mt-2">
-                        <div class="flex text-yellow-400">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <span class="text-xs text-gray-500 ml-2">(37)</span>
-                    </div>
-                    <div class="mt-3">
-                        <span class="font-bold">$129.99</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Product Card -->
-            <div class="product-card bg-white rounded-lg overflow-hidden border shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl cursor-pointer">
-                <div class="relative overflow-hidden rounded-lg p-2">
-                    <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Product" class="w-full h-80 object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110">
-                    <div class="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded">New</div>
-                    <button class="absolute bottom-3 right-3 bg-white border-2 border-gray-400 rounded-full px-2.5 py-1.5 shadow-lg hover:bg-accent hover:text-white transition-colors">
-                        <i class="fas fa-shopping-cart"></i>
-                    </button>
-                </div>
-                <div class="p-4">
-                    <a href="#" class="font-medium hover:text-accent transition">Casual Linen Shirt</a>
-                    <div class="flex items-center mt-2">
-                        <div class="flex text-yellow-400">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <span class="text-xs text-gray-500 ml-2">(19)</span>
-                    </div>
-                    <div class="mt-3">
-                        <span class="font-bold">$64.99</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    </main>
 
     <!-- Newsletter -->
     <section class="bg-[linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)),url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80')] bg-cover bg-center text-white py-16">
@@ -723,115 +509,296 @@
                             <i class="fab fa-pinterest-p"></i>
                         </a>
                     </div>
-                    <p class="text-gray-400">Download our app on:</p>
+                    <p class="text-gray-400">Download our app</p>
                     <div class="flex space-x-2 mt-2">
-                        <a href="#" class="text-xs bg-gray-800 px-3 py-2 rounded hover:bg-accent transition">App Store</a>
-                        <a href="#" class="text-xs bg-gray-800 px-3 py-2 rounded hover:bg-accent transition">Google Play</a>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/120x40/222222/666666?text=App+Store" alt="App Store" class="h-10">
+                        </a>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/120x40/222222/666666?text=Google+Play" alt="Google Play" class="h-10">
+                        </a>
                     </div>
                 </div>
             </div>
             
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
                 <p>&copy; 2023 VogueThreads. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript -->
     <script>
         // Mobile menu toggle
         document.getElementById('mobileMenuButton').addEventListener('click', function() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
         });
 
-        // Thumbnail image selection
-        document.querySelectorAll('.thumbnail').forEach(thumb => {
-            thumb.addEventListener('click', function() {
-                // Update main image
-                const newImage = this.getAttribute('data-image');
-                document.getElementById('mainImage').src = newImage;
+        // Cart functionality
+        const cartIcon = document.getElementById('cartIcon');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const closeCart = document.getElementById('closeCart');
+        const cartCount = document.getElementById('cartCount');
+        const cartItems = document.getElementById('cartItems');
+        const emptyCartMessage = document.getElementById('emptyCartMessage');
+        const cartSubtotal = document.getElementById('cartSubtotal');
+        const clearCartBtn = document.getElementById('clearCart');
+        
+        let cart = [];
+        
+        cartIcon.addEventListener('click', function(e) {
+            e.preventDefault();
+            cartOverlay.classList.add('open');
+            cartSidebar.classList.add('open');
+        });
+        
+        closeCart.addEventListener('click', function() {
+            cartOverlay.classList.remove('open');
+            cartSidebar.classList.remove('open');
+        });
+        
+        cartOverlay.addEventListener('click', function() {
+            cartOverlay.classList.remove('open');
+            cartSidebar.classList.remove('open');
+        });
+        
+        // Product image thumbnails
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const mainImage = document.getElementById('mainImage');
+        
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', function() {
+                const imageUrl = this.getAttribute('data-image');
+                mainImage.src = imageUrl;
                 
-                // Update active thumbnail
-                document.querySelectorAll('.thumbnail').forEach(t => {
-                    t.classList.remove('active');
-                });
+                thumbnails.forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
             });
         });
-
+        
         // Size selection
-        document.querySelectorAll('.size-option').forEach(size => {
-            size.addEventListener('click', function() {
-                document.querySelectorAll('.size-option').forEach(s => {
-                    s.classList.remove('selected');
-                });
+        const sizeOptions = document.querySelectorAll('.size-option');
+        
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                sizeOptions.forEach(o => o.classList.remove('selected'));
                 this.classList.add('selected');
-                
-                // Hide size error if shown
-                document.getElementById('sizeError').classList.add('hidden');
             });
         });
-
-        // Color selection
-        document.querySelectorAll('.color-option').forEach(color => {
-            color.addEventListener('click', function() {
-                document.querySelectorAll('.color-option').forEach(c => {
-                    c.classList.remove('selected');
-                });
-                this.classList.add('selected');
-                
-                // Update selected color text
-                document.getElementById('selectedColor').textContent = this.getAttribute('data-color');
-            });
-        });
-
+        
         // Quantity adjustment
-        document.getElementById('increaseQty').addEventListener('click', function() {
-            const input = document.getElementById('quantity');
-            input.value = parseInt(input.value) + 1;
-        });
-
-        document.getElementById('decreaseQty').addEventListener('click', function() {
-            const input = document.getElementById('quantity');
-            if (parseInt(input.value) > 1) {
-                input.value = parseInt(input.value) - 1;
+        const decreaseBtn = document.getElementById('decreaseQty');
+        const increaseBtn = document.getElementById('increaseQty');
+        const quantityInput = document.getElementById('quantity');
+        
+        decreaseBtn.addEventListener('click', function() {
+            let currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
             }
         });
-
-        // Add to cart functionality
-        document.getElementById('addToCart').addEventListener('click', function() {
-            const selectedSize = document.querySelector('.size-option.selected');
-            
-            if (!selectedSize) {
-                // Show size error
-                document.getElementById('sizeError').classList.remove('hidden');
-                return;
+        
+        increaseBtn.addEventListener('click', function() {
+            let currentValue = parseInt(quantityInput.value);
+            if (currentValue < 10) {
+                quantityInput.value = currentValue + 1;
             }
-            
-            const size = selectedSize.getAttribute('data-size');
-            const color = document.querySelector('.color-option.selected').getAttribute('data-color');
-            const quantity = document.getElementById('quantity').value;
-            
-            // In a real application, you would add to cart here
-            console.log(`Added to cart: Size ${size}, Color ${color}, Quantity ${quantity}`);
-            
-            // Show success message (in a real app, this would be a proper notification)
-            alert(`Added ${quantity} ${color} size ${size} t-shirt to cart!`);
         });
-
-        // Sticky add to cart on scroll
-        window.addEventListener('scroll', function() {
-            const stickyElement = document.getElementById('stickyAddToCart');
-            const productSection = document.querySelector('section');
-            const productSectionBottom = productSection.offsetTop + productSection.offsetHeight;
+        
+        // Add to cart
+        const addToCartBtn = document.getElementById('addToCart');
+        
+        addToCartBtn.addEventListener('click', function() {
+            const selectedSize = document.querySelector('.size-option.selected').getAttribute('data-size');
+            const quantity = parseInt(quantityInput.value);
             
-            if (window.scrollY > productSectionBottom - 100) {
-                stickyElement.classList.add('visible');
+            const product = {
+                id: 1,
+                name: 'Minimalist Oversized T-Shirt',
+                price: 49.99,
+                size: selectedSize,
+                quantity: quantity,
+                image: mainImage.src
+            };
+            
+            addToCart(product);
+            
+            // Show confirmation
+            const confirmation = document.createElement('div');
+            confirmation.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in';
+            confirmation.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span>Added to cart successfully!</span>
+                </div>
+            `;
+            document.body.appendChild(confirmation);
+            
+            setTimeout(() => {
+                confirmation.remove();
+            }, 3000);
+        });
+        
+        // Add to cart from related products
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const name = this.getAttribute('data-name');
+                const price = parseFloat(this.getAttribute('data-price'));
+                const image = this.getAttribute('data-image');
+                
+                const product = {
+                    id: id,
+                    name: name,
+                    price: price,
+                    size: 'M', // Default size
+                    quantity: 1,
+                    image: image
+                };
+                
+                addToCart(product);
+                
+                // Show confirmation
+                const confirmation = document.createElement('div');
+                confirmation.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in';
+                confirmation.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span>Added to cart successfully!</span>
+                    </div>
+                `;
+                document.body.appendChild(confirmation);
+                
+                setTimeout(() => {
+                    confirmation.remove();
+                }, 3000);
+            });
+        });
+        
+        // Clear cart
+        clearCartBtn.addEventListener('click', function() {
+            cart = [];
+            updateCart();
+        });
+        
+        function addToCart(product) {
+            // Check if product with same ID and size already exists in cart
+            const existingProductIndex = cart.findIndex(item => 
+                item.id === product.id && item.size === product.size
+            );
+            
+            if (existingProductIndex !== -1) {
+                // Update quantity if product already exists
+                cart[existingProductIndex].quantity += product.quantity;
             } else {
-                stickyElement.classList.remove('visible');
+                // Add new product to cart
+                cart.push(product);
             }
-        });
+            
+            updateCart();
+            
+            // Open cart sidebar
+            cartOverlay.classList.add('open');
+            cartSidebar.classList.add('open');
+        }
+        
+        function updateCart() {
+            // Update cart count
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            // Update cart items display
+            if (cart.length === 0) {
+                emptyCartMessage.classList.remove('hidden');
+                cartItems.innerHTML = '';
+                cartItems.appendChild(emptyCartMessage);
+            } else {
+                emptyCartMessage.classList.add('hidden');
+                
+                let cartHTML = '';
+                let subtotal = 0;
+                
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    
+                    cartHTML += `
+                        <div class="flex items-center mb-4 pb-4 border-b">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                            <div class="ml-4 flex-1">
+                                <h4 class="font-medium">${item.name}</h4>
+                                <p class="text-sm text-gray-500">Size: ${item.size}</p>
+                                <div class="flex justify-between items-center mt-1">
+                                    <div class="flex items-center">
+                                        <button class="quantity-btn decrease-item" data-id="${item.id}" data-size="${item.size}">-</button>
+                                        <input type="number" value="${item.quantity}" min="1" class="quantity-input item-quantity" data-id="${item.id}" data-size="${item.size}">
+                                        <button class="quantity-btn increase-item" data-id="${item.id}" data-size="${item.size}">+</button>
+                                    </div>
+                                    <span class="font-bold">$${itemTotal.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <button class="text-gray-400 hover:text-red-500 remove-item ml-2" data-id="${item.id}" data-size="${item.size}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                cartItems.innerHTML = cartHTML;
+                
+                // Add event listeners to quantity buttons in cart
+                document.querySelectorAll('.increase-item').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        const size = this.getAttribute('data-size');
+                        const item = cart.find(item => item.id === id && item.size === size);
+                        
+                        if (item) {
+                            item.quantity++;
+                            updateCart();
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.decrease-item').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        const size = this.getAttribute('data-size');
+                        const item = cart.find(item => item.id === id && item.size === size);
+                        
+                        if (item && item.quantity > 1) {
+                            item.quantity--;
+                            updateCart();
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.remove-item').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        const size = this.getAttribute('data-size');
+                        
+                        cart = cart.filter(item => !(item.id === id && item.size === size));
+                        updateCart();
+                    });
+                });
+            }
+            
+            // Update subtotal
+            cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+        }
+        
+        // Accordion functionality
+        function toggleAccordion(id) {
+            const content = document.getElementById(id + 'Content');
+            const icon = document.getElementById(id + 'Icon');
+            
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        }
     </script>
 </body>
 </html>
